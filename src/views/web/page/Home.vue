@@ -154,7 +154,12 @@
 				  })[0].point
 				  let point = new BMap.Point(points.lng,points.lat);
 				  this.map.centerAndZoom(point,18);
-			  }
+				  
+				  console.log(points);
+				  //存一下坐标,再跳转到列表页
+				  this.$store.commit('setCoordinate',points);
+				  this.$router.push({path: '/businessList'})
+			  },
 		},
 		beforeDestroy() {
 			

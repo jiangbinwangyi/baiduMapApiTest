@@ -24,11 +24,11 @@ router.beforeEach((to, from, next) => {
   window.scroll(0, 0)
   NProgress.start()
   utils.storage.get('userInfo', obj => {
-    if (to.meta.verify && !obj.token) {
+    if (to.meta.verify && !obj.jwt) {
       Vue.prototype.$message({
         'message': '无权访问，请先登录！', 'type': 'warning'
       })
-      next({ path: '/admin/login', query: { url: to.fullPath } })// 无权访问
+      next({ path: '/', query: { url: to.fullPath } })// 无权访问
     } else if (to.meta.grade && to.meta.grade < obj.userInfo.user_type) {
       Vue.prototype.$message({
         'message': '无权访问此页面！', 'type': 'warning'

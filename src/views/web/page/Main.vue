@@ -22,7 +22,7 @@
 						<el-button type="text" @click="setLogin({state:'business',show:true});">商户入住</el-button>
 					</div>
 					<div class="yesLogin" v-if="loginInfo.is">
-						<el-button type="text">{{userInfo.username}}</el-button>
+						<el-button type="text" @click="toBusinessInfo">{{userInfo.username}}</el-button>
 						<span style="font-size: 12px;color: #fff;margin: 0 12px;">|</span>
 						<el-button type="text" @click="logout">退出</el-button>
 					</div>
@@ -96,8 +96,9 @@
 				return nav;
 			}
 		},
-		mounted() {
-			this.setLogin({is: !Object.keys(utils.storage.get('userInfo')).length === 0});
+		mounted() {},
+		created() {
+			this.setLogin({is: Object.keys(utils.storage.get('userInfo')).length !== 0});
 		},
 		methods:{
 			handleSelect(key,keyPath){
@@ -106,6 +107,9 @@
 			logout(){
 				utils.storage.remove('userInfo');
 				window.location.reload();
+			},
+			toBusinessInfo(){
+				this.$router.push({path:'/businessInfoEdit'})
 			},
 			...mapMutations(['setLogin'])
 		},

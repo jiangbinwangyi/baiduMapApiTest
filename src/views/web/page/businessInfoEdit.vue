@@ -122,27 +122,41 @@
 						message: '恭喜您提交成功',
 						type: 'success'
 					})
+					this.$router.push({path:'/businessGoods'})
 				}
 			})
 		  },
 		  //城市定位
-		  theLocation(){
+		  theLocation(coordinate){
 		  	// var city = document.getElementById("cityName").value;
 		  	let point = null;
+			let zoom = 12;
 		  	if(this.form.city != ""){
-		  		this.citys.map(e=>{
-		  			e.options.map(n=>{
-		  				if(n.value == this.form.city){
-		  					point = new BMap.Point(n.coordinate[1],n.coordinate[0]);
-		  				}
-		  			})
-		  		})
-		  		this.map.centerAndZoom(point,12);      // 用城市名设置地图中心点
+				if(coordinate){
+					zoom = 19;
+					point = new BMap.Point(coordinate[1],coordinate[0]);
+					let marker = new BMap.Marker(point);        // 创建标注    
+					this.map.addOverlay(marker);               // 将标注添加到地图中 
+					marker.enableDragging(); //可拖拽
+				}else{
+					this.citys.map(e=>{
+						e.options.map(n=>{
+							if(n.value == this.form.city){
+								point = new BMap.Point(n.coordinate[1],n.coordinate[0]);
+							}
+						})
+					})
+					console.log(point,zoom);
+				}
+		  		
+		  		this.map.centerAndZoom(point,zoom);      // 用城市名设置地图中心点
 				this.map.addControl(new BMap.NavigationControl());    
 				// this.map.addControl(new BMap.ScaleControl());    
 				// this.map.addControl(new BMap.OverviewMapControl());    
 				// this.map.addControl(new BMap.MapTypeControl());    
-		  	}
+		  	}else{
+					
+			}
 		  },
 		  //地址搜索
 		  querySearch(queryString, cb) {
@@ -189,33 +203,69 @@
 		  },
 		  regionChange(){
 			  this.form.store_sort = this.storeClass[this.form.regionP].children[0].id;
+		  },
+		  getStoreClass(){
+			  return new Promise((resolve,reject)=>{
+				  utils.ajax.call(this, 'index/hall/store_sort', {}, (data, err) => {
+				  	if(!err){
+				  		data.map(e=>{
+				  			if(e.sup_id==0){
+				  				e.children = [];
+				  				this.storeClass.push(e);
+				  			}else{
+				  				let target = this.storeClass.findIndex(n=>{
+				  					return n.id == e.sup_id; 
+				  				})
+				  				this.storeClass[target].children.push(e);
+				  			}
+				  		})
+				  		//设置默认值
+				  		this.form.regionP = 0;
+				  		this.form.store_sort = this.storeClass[this.form.regionP].children[0].id;
+						
+						resolve();
+				  	}
+				  })
+			  })
+		  },
+		  getStoreInfo(){
+			  return new Promise((resolve,reject)=>{
+				  utils.ajax.call(this, 'index/hall/get_store_info', {}, (data, err) => {
+					  if(!err){
+						resolve(data)
+					  }
+				  })
+			  })
 		  }
 		},
 		mounted(){
 			this.map = new BMap.Map("l-map"); 
-			//初始化定位城市（北京）
-			this.theLocation();
-		},
-		created() { 
-			//分类遍历
-			utils.ajax.call(this, 'index/hall/store_sort', {}, (data, err) => {
-				if(!err){
-					data.map(e=>{
-						if(e.sup_id==0){
-							e.children = [];
-							this.storeClass.push(e);
-						}else{
-							let target = this.storeClass.findIndex(n=>{
-								return n.id == e.sup_id; 
-							})
-							this.storeClass[target].children.push(e);
+			
+			this.getStoreClass().then(data=>{
+				return this.getStoreInfo();
+			}).then(data=>{
+				if(data.length>0){
+					this.form = data;
+					this.form.phone = data.telephone;
+					this.form.store_sort = parseInt(data.store_sort);
+					this.form.city = "Beijing";
+					this.storeClass.forEach(e=>{
+						let status = e.children.findIndex(c=>c.id == data.store_sort);
+						if(status>-1){
+							this.form.regionP = e.id;
 						}
 					})
-					//设置默认值
-					this.form.regionP = 0;
-					this.form.store_sort = this.storeClass[this.form.regionP].children[0].id;
+					
+					//初始化定位城市（北京）/
+					this.theLocation([this.form.latitude,this.form.longitude]);
+				}else{
+					this.theLocation()
 				}
 			})
+		},
+		created() { 			
+			
+			
 		}
 	}
 </script>

@@ -20,7 +20,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/ssh': {
-        target: 'http://192.168.168.5:11111',
+        target: 'http://192.168.168.43:11111',
         changeOrigin: true
       }
     }

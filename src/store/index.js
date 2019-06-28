@@ -8,7 +8,8 @@ export default new Vuex.Store({
 		loginInfo: {
 			is: false,
 			state: "login",
-			show: false
+			show: false,
+			coordinate: null,
 		},
   },
   mutations: {
@@ -23,9 +24,13 @@ export default new Vuex.Store({
       }
     },
 		setLogin(state,login){
+			console.log(login);
 			state.loginInfo.state = login.state!==undefined ? login.state : state.loginInfo.state;
 			state.loginInfo.show = login.show!==undefined ? login.show : state.loginInfo.show;
 			state.loginInfo.is = login.is!==undefined ? login.is : state.loginInfo.is;
+		},
+		setCoordinate(state,point){
+			state.coordinate = point;
 		}
   },
   actions: {

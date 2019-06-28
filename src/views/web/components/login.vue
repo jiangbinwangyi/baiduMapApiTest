@@ -73,9 +73,17 @@
 									
 									this.setLogin({show:false,is:true})
 									
-			            //let url = this.$route.query.url
+									if(data.store_perfection==1){ //未填写认证信息
+										this.$router.push({path:'/businessInfoEdit'})
+									}else if(data.store_perfection==2){ //未认证通过
+										this.$router.push({path:'/businessGoods'}) //暂时不审核
+									}else{ //通过认证
+										this.$router.push({path:'/businessGoods'})
+									}
+									
+			            // let url = this.$route.query.url
 			            // url = url && !url.includes('login') ? url : '/admin/article/list'
-			            //this.$router.replace('/')
+			            // this.$router.replace('/')
 			          })
 			        }
 			      })

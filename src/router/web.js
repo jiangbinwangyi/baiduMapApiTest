@@ -1,8 +1,8 @@
 import Main from '../views/web/page/Main.vue'
 import Home from '../views/web/page/Home.vue'
-import service from '../views/web/page/service.vue'
+import businessList from '../views/web/page/businessList.vue'
 import dataChart from '../views/web/page/dataChart.vue'
-import cooperate from '../views/web/page/cooperate.vue'
+import businessGoods from '../views/web/page/businessGoods.vue'
 import businessInfoEdit from '../views/web/page/businessInfoEdit.vue'
 
 export default[
@@ -13,13 +13,13 @@ export default[
 		children: [{
 			path: '/',
 			name: 'home',
-			meta: {title: '首页'},
+			meta: {title: '首页',verify:false},
 			component: Home
 		},{
-			path: '/service',
-			name: 'service',
+			path: '/businessList',
+			name: 'businessList',
 			meta: {title: '产品服务'},
-			component: service
+			component: businessList
 		},
 		{
 			path: '/dataChart',
@@ -28,15 +28,15 @@ export default[
 			component: dataChart
 		},
 		{
-			path: '/cooperate',
-			name: 'cooperate',
-			meta: {title: '关于我们'},
-			component: cooperate
+			path: '/businessGoods',
+			name: 'businessGoods',
+			meta: {title: '商品管理',verify:true},
+			component: businessGoods
 		},
 		{
 			path: '/businessInfoEdit',
 			name: 'businessInfoEdit',
-			meta: {title: '联系我们'},
+			meta: {title: '商家信息',verify:true},
 			component: businessInfoEdit
 		}]
 	},
